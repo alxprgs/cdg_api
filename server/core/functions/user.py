@@ -1,12 +1,5 @@
 from fastapi import Request, HTTPException, status
 
-async def check_auth_us(request, database) -> bool:
-    token = request.cookies.get('token')
-    if token:
-        user = await database["users"].find_one({"session": token})
-        return True if user else False
-    return False 
-
 async def get_authenticated_user(request: Request, database):
     token = request.cookies.get("token")
     if not token:

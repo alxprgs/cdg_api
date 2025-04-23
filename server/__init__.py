@@ -9,8 +9,8 @@ from .core.databases.database_mongo import connect_mongo
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     global database, client
     database, client = await connect_mongo()
-    from .routes.user import check_auth, login, logout, reg
-    from .routes import server_status
+    from .routes.user import check_auth, login, logout, reg, get_name
+    from .routes import server_status, create_payment, cart
     try:
         yield
     finally:
@@ -25,7 +25,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.CORS_ORIGINS],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]

@@ -12,7 +12,7 @@ class User_reg(BaseModel):
     repetition_password: str = Field(..., min_length=8)
 
 
-@app.post("/reg")
+@app.post("/v1/reg")
 async def reg(user_data: User_reg) -> JSONResponse:
     db = database["users"]
     existing_user = await db.find_one({"login": user_data.login})
@@ -31,8 +31,7 @@ async def reg(user_data: User_reg) -> JSONResponse:
             "login": user_data.login,
             "Name": user_data.name,
             "password": create_hash(user_data.password),
-            "session": token,
-            "csrf_token": csrf_token,
+            "session": token
         })
     except Exception as e:
        return JSONResponse({"status": False, "message": "server error"}, status_code=500)

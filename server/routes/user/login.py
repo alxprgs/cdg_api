@@ -9,7 +9,7 @@ class User_login(BaseModel):
     login: PhoneNumber = Field(...)
     password: str = Field(...)
 
-@app.post("/login")
+@app.post("/v1/login")
 async def login(user_data: User_login) -> JSONResponse:
     db = database["users"]
     try:
@@ -17,7 +17,7 @@ async def login(user_data: User_login) -> JSONResponse:
     except Exception:
         return JSONResponse({"status": False, "message": "server error"}, status_code=500)
     if user:
-        if verify_hash(plain_password=user_data.password, hashed_password=user["password"]):
+        if verify_hash(plain_hash=user_data.password, hashed_hash=user["password"]):
             token = token_urlsafe(128)
             csrf_token = token_urlsafe(64)
             await database["users"].update_one({"_id": user["_id"]}, {"$set": {"session": token, "csrf_token": csrf_token}})
